@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="FutureFunds - Interactive financial literacy platform for students ages 10-18. Learn about budgeting, saving, investing, and credit through quizzes, scenarios, and gamified learning.">
+    <meta name="keywords"
+        content="financial literacy, students, budgeting, investing, credit score, education, money management">
+    <meta name="author" content="FutureFunds">
+    <title>FutureFunds - Financial Literacy for Students</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css?v=1.2">
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">💰</span>
+                <h1 class="logo-text">FutureFunds</h1>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link" data-view="home">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="#dashboard" class="nav-link" data-view="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#quiz" class="nav-link" data-view="quiz">
+                    <span class="nav-icon">📝</span>
+                    <span>Quiz</span>
+                </a>
+                <a href="#investing" class="nav-link" data-view="investing">
+                    <span class="nav-icon">📈</span>
+                    <span>Investing</span>
+                </a>
+                <a href="#credit" class="nav-link" data-view="credit">
+                    <span class="nav-icon">💳</span>
+                    <span>Credit</span>
+                </a>
+                <a href="#library" class="nav-link" data-view="library">
+                    <span class="nav-icon">📚</span>
+                    <span>Library</span>
+                </a>
+                <a href="#profile" class="nav-link" data-view="profile">
+                    <span class="nav-icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </div>
+
+            <div class="nav-stats">
+                <div class="stat-item" id="nav-level">
+                    <span class="stat-label">Level</span>
+                    <span class="stat-value">1</span>
+                </div>
+                <div class="stat-item" id="nav-streak">
+                    <span class="stat-icon">🔥</span>
+                    <span class="stat-value">0</span>
+                </div>
+                <div class="stat-item" id="nav-credit">
+                    <span class="stat-label">Credit</span>
+                    <span class="stat-value">650</span>
+                </div>
+            </div>
+
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app" class="main-content">
+        <!-- Dynamic content will be rendered here -->
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading FutureFunds...</p>
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="modules/storage.js"></script>
+    <script src="modules/gamification.js"></script>
+    <script src="modules/quiz-engine.js"></script>
+    <script src="data/quizzes.js"></script>
+    <script src="data/credit-scenarios.js"></script>
+    <script src="data/stocks.js"></script>
+    <script src="data/resources.js"></script>
+    <script src="views/home.js"></script>
+    <script src="views/dashboard.js"></script>
+    <script src="views/quiz.js"></script>
+    <script src="views/investing.js"></script>
+    <script src="views/credit.js"></script>
+    <script src="views/library.js"></script>
+    <script src="views/profile.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
