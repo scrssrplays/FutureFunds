@@ -39,20 +39,20 @@ const DashboardView = {
                 </div>
                 
                 <div class="grid grid-3 mt-4">
-                    <div class="stat-card card">
-                        <div class="stat-icon">📝</div>
-                        <div class="stat-value">${quizHistory.length}</div>
-                        <div class="stat-label">Quizzes Completed</div>
+                    <div class="dashboard-stat-card card">
+                        <div class="dashboard-stat-icon">📝</div>
+                        <div class="dashboard-stat-value">${quizHistory.length}</div>
+                        <div class="dashboard-stat-label">Quizzes Completed</div>
                     </div>
-                    <div class="stat-card card">
-                        <div class="stat-icon">🔥</div>
-                        <div class="stat-value">${profile.streak}</div>
-                        <div class="stat-label">Day Streak</div>
+                    <div class="dashboard-stat-card card">
+                        <div class="dashboard-stat-icon">🔥</div>
+                        <div class="dashboard-stat-value">${profile.streak}</div>
+                        <div class="dashboard-stat-label">Day Streak</div>
                     </div>
-                    <div class="stat-card card">
-                        <div class="stat-icon">💯</div>
-                        <div class="stat-value">${quizHistory.filter(q => q.isPerfect).length}</div>
-                        <div class="stat-label">Perfect Scores</div>
+                    <div class="dashboard-stat-card card">
+                        <div class="dashboard-stat-icon">💯</div>
+                        <div class="dashboard-stat-value">${quizHistory.filter(q => q.isPerfect).length}</div>
+                        <div class="dashboard-stat-label">Perfect Scores</div>
                     </div>
                 </div>
                 
@@ -120,19 +120,19 @@ const DashboardView = {
                     font-size: var(--font-size-xs);
                     text-align: center;
                 }
-                .stat-card {
+                .dashboard-stat-card {
                     text-align: center;
                 }
-                .stat-icon {
+                .dashboard-stat-icon {
                     font-size: var(--font-size-4xl);
                     margin-bottom: var(--spacing-sm);
                 }
-                .stat-value {
+                .dashboard-stat-value {
                     font-size: var(--font-size-3xl);
                     font-weight: 700;
                     color: var(--color-primary-light);
                 }
-                .stat-label {
+                .dashboard-stat-label {
                     color: var(--color-text-secondary);
                     margin-top: var(--spacing-xs);
                 }

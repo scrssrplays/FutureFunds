@@ -21,9 +21,12 @@ const App = {
         // Start market simulation loop
         setInterval(() => {
             StockData.updateMarket();
-            // Only re-render if on investing page to avoid jarring updates
+            // Only re-render if on investing page AND no modal is open
             if (this.currentView === 'investing') {
-                this.render();
+                const isModalOpen = document.querySelector('.modal:not(.hidden)');
+                if (!isModalOpen) {
+                    this.render();
+                }
             }
         }, 5000); // Update every 5 seconds
 

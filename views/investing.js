@@ -27,6 +27,33 @@ const InvestingView = {
             <div class="investing-container">
                 <h1 class="page-title">Paper Trading 📈</h1>
                 
+                <div class="grid grid-2 mb-4">
+                    <div class="card">
+                        <div class="flex justify-between align-center mb-2">
+                            <h2 class="card-title" style="margin: 0; font-size: 1.25rem;">Market Settings ⚙️</h2>
+                            <div class="toggle-switch">
+                                <label class="switch">
+                                    <input type="checkbox" id="real-time-toggle" ${Storage.get(Storage.keys.USE_REAL_TIME) ? 'checked' : ''}>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="api-key-container" class="${Storage.get(Storage.keys.USE_REAL_TIME) ? '' : 'hidden'}">
+                            <div class="flex gap-2">
+                                <input type="password" id="api-key-input" class="form-input" placeholder="Enter Finnhub API Key" value="${Storage.get(Storage.keys.STOCK_API_KEY) || ''}">
+                                <button id="save-api-key" class="btn btn-sm btn-primary">Save</button>
+                            </div>
+                            <p class="text-muted text-xs mt-1">Get a free key at <a href="https://finnhub.io/" target="_blank" style="color: var(--color-primary-light);">finnhub.io</a></p>
+                        </div>
+                        <div id="simulation-badge" class="badge badge-warning mt-2 ${Storage.get(Storage.keys.USE_REAL_TIME) ? 'hidden' : ''}">
+                            ⚠️ Using Simulated Data
+                        </div>
+                        <div id="realtime-badge" class="badge badge-success mt-2 ${Storage.get(Storage.keys.USE_REAL_TIME) ? '' : 'hidden'}">
+                            🟢 Real-Time Data Active
+                        </div>
+                    </div>
+                </div>
+
                 <div class="grid grid-3">
                     <div class="card">
                         <div class="stat-label">Total Portfolio Value</div>
@@ -86,6 +113,14 @@ const InvestingView = {
                     <div id="modal-body"></div>
                 </div>
             </div>
+
+            <!-- Chart Modal -->
+            <div id="chart-view-modal" class="modal hidden">
+                <div class="modal-content glass-card" style="max-width: 600px;">
+                    <span class="close-modal">&times;</span>
+                    <div id="chart-modal-body"></div>
+                </div>
+            </div>
             
             <style>
                 .stat-value-lg {
@@ -102,8 +137,8 @@ const InvestingView = {
                     gap: var(--spacing-sm);
                 }
                 .stock-item {
-                    display: flex;
-                    justify-content: space-between;
+                    display: grid;
+                    grid-template-columns: 1fr 140px 230px;
                     align-items: center;
                     padding: var(--spacing-md);
                     background: rgba(255, 255, 255, 0.03);
@@ -117,19 +152,24 @@ const InvestingView = {
                     display: flex;
                     align-items: center;
                     gap: var(--spacing-md);
+                    overflow: hidden; /* Prevent spillover */
                 }
                 .stock-symbol {
                     font-weight: 700;
                     font-size: var(--font-size-lg);
                     width: 60px;
+                    flex-shrink: 0;
                 }
                 .stock-name {
                     color: var(--color-text-secondary);
                     font-size: var(--font-size-sm);
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
                 .stock-price-info {
                     text-align: right;
-                    margin-right: var(--spacing-lg);
+                    margin-right: 1.5rem;
                 }
                 .stock-price {
                     font-weight: 700;
@@ -217,6 +257,7 @@ const InvestingView = {
                     </div>
                 </div>
                 <div class="stock-actions">
+                    <button class="btn btn-sm btn-info chart-btn" data-symbol="${stock.symbol}">📊 Chart</button>
                     <button class="btn btn-sm btn-success trade-btn" data-action="buy" data-symbol="${stock.symbol}">Buy</button>
                     <button class="btn btn-sm btn-danger trade-btn" data-action="sell" data-symbol="${stock.symbol}" ${quantity === 0 ? 'disabled' : ''}>Sell</button>
                 </div>
@@ -284,7 +325,55 @@ const InvestingView = {
         `;
     },
 
+    renderChartModal(symbol) {
+        return `
+            <div class="chart-header mb-2">
+                <h3>${symbol} Price History</h3>
+            </div>
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="stockChart"></canvas>
+            </div>
+        `;
+    },
+
     attachEventListeners() {
+        // Real-Time Toggle
+        const toggle = document.getElementById('real-time-toggle');
+        const apiKeyContainer = document.getElementById('api-key-container');
+        const simBadge = document.getElementById('simulation-badge');
+        const realTimeBadge = document.getElementById('realtime-badge');
+
+        toggle?.addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            Storage.set(Storage.keys.USE_REAL_TIME, isChecked);
+
+            if (isChecked) {
+                apiKeyContainer.classList.remove('hidden');
+                simBadge.classList.add('hidden');
+                realTimeBadge.classList.remove('hidden');
+                App.showToast('Real-time data enabled. Please ensure API Key is saved.', 'info');
+            } else {
+                apiKeyContainer.classList.add('hidden');
+                simBadge.classList.remove('hidden');
+                realTimeBadge.classList.add('hidden');
+                App.showToast('Switched to simulated market data.', 'info');
+            }
+            // Trigger refresh
+            StockData.updateMarket().then(() => App.render());
+        });
+
+        // Save API Key
+        document.getElementById('save-api-key')?.addEventListener('click', () => {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                Storage.set(Storage.keys.STOCK_API_KEY, key);
+                App.showToast('API Key saved successfully!', 'success');
+                StockData.updateMarket().then(() => App.render());
+            } else {
+                App.showToast('Please enter a valid API key.', 'error');
+            }
+        });
+
         // Open Trade Modal
         document.querySelectorAll('.trade-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -294,17 +383,28 @@ const InvestingView = {
             });
         });
 
+        // Open Chart Modal
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const symbol = e.currentTarget.dataset.symbol;
+                this.openChartModal(symbol);
+            });
+        });
+
         // Close Modal
-        document.querySelector('.close-modal')?.addEventListener('click', () => {
-            document.getElementById('trade-modal').classList.add('hidden');
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('trade-modal').classList.add('hidden');
+                document.getElementById('chart-view-modal').classList.add('hidden');
+            });
         });
 
         // Close on outside click
         window.onclick = (event) => {
-            const modal = document.getElementById('trade-modal');
-            if (event.target === modal) {
-                modal.classList.add('hidden');
-            }
+            const tradeModal = document.getElementById('trade-modal');
+            const chartModal = document.getElementById('chart-view-modal');
+            if (event.target === tradeModal) tradeModal.classList.add('hidden');
+            if (event.target === chartModal) chartModal.classList.add('hidden');
         };
     },
 
@@ -347,6 +447,79 @@ const InvestingView = {
             modal.classList.add('hidden');
             App.render(); // Refresh view
             App.showToast(`Successfully ${action === 'buy' ? 'bought' : 'sold'} ${qty} shares of ${symbol}`, 'success');
+        });
+    },
+
+    openChartModal(symbol) {
+        const modal = document.getElementById('chart-view-modal');
+        const body = document.getElementById('chart-modal-body');
+
+        if (!modal) return; // Guard clause
+
+        body.innerHTML = this.renderChartModal(symbol);
+        modal.classList.remove('hidden');
+
+        // Initialize Chart
+        this.initChart(symbol);
+    },
+
+    initChart(symbol) {
+        const ctx = document.getElementById('stockChart');
+        if (!ctx) return;
+
+        const history = StockData.getPriceHistory(symbol, 50); // Get last 50 points
+        const stock = StockData.getStock(symbol);
+
+        // Flatten data for chart
+        const labels = history.map(h => new Date(h.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        const dataPoints = history.map(h => h.price);
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${symbol} Price`,
+                    data: dataPoints,
+                    borderColor: stock.color,
+                    backgroundColor: stock.color + '20', // transparent fill
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: (context) => `$${context.parsed.y.toFixed(2)}`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false,
+                        grid: { display: false }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: {
+                            color: '#94a3b8',
+                            callback: (value) => '$' + value.toFixed(0)
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
         });
     },
 

@@ -2,32 +2,45 @@
    CSS CUSTOM PROPERTIES - Design System
    ======================================== */
 :root {
-    /* Color Palette - Vibrant Gradients */
-    --color-primary: #8B5CF6;
-    --color-primary-light: #A78BFA;
-    --color-primary-dark: #7C3AED;
-    --color-secondary: #06B6D4;
-    --color-secondary-light: #22D3EE;
-    --color-secondary-dark: #0891B2;
-    --color-accent: #EC4899;
-    --color-success: #10B981;
-    --color-warning: #F59E0B;
-    --color-danger: #EF4444;
-    --color-info: #3B82F6;
+    /* Color Palette - User Custom Sage Theme */
+    --color-primary: #526458;
+    /* User Dark Sage */
+    --color-primary-light: #65776b;
+    /* User Medium Sage */
+    --color-primary-dark: #3A4A40;
+    /* Derived Darker */
+    --color-secondary: #65776b;
+    /* User Medium Sage */
+    --color-secondary-light: #8DA399;
+    --color-secondary-dark: #2F3E35;
+    --color-accent: #cbddd1;
+    /* User Light Sage */
+    --color-success: #65776b;
+    /* Muted Success */
+    --color-warning: #D4A373;
+    /* Earthy Orange */
+    --color-danger: #BC6C6C;
+    /* Muted Red */
+    --color-info: #526458;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-    --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    --gradient-rainbow: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-    --gradient-bg: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
+    --gradient-primary: linear-gradient(135deg, #526458 0%, #65776b 100%);
+    --gradient-secondary: linear-gradient(135deg, #3A4A40 0%, #526458 100%);
+    --gradient-success: linear-gradient(135deg, #65776b 0%, #526458 100%);
+    --gradient-danger: linear-gradient(135deg, #BC6C6C 0%, #8C4B4B 100%);
+    --gradient-rainbow: linear-gradient(135deg, #3A4A40 0%, #526458 25%, #65776b 50%, #8DA399 75%, #cbddd1 100%);
+    --gradient-bg: linear-gradient(135deg, #1A221E 0%, #2F3834 100%);
+    /* Slightly lighter dark bg to match potential look */
 
     /* Neutral Colors */
-    --color-bg-dark: #0f172a;
-    --color-bg-medium: #1e293b;
-    --color-bg-light: #334155;
-    --color-text-primary: #f8fafc;
+    --color-bg-dark: #121815;
+    /* Custom Dark Green-Black */
+    --color-bg-medium: #1F2924;
+    /* Custom Dark Sage-Grey */
+    --color-bg-light: #2D3A34;
+    /* Custom Medium Green */
+    --color-text-primary: #cbddd1;
+    /* Using the light sage for main text/headers */
     --color-text-secondary: #cbd5e1;
     --color-text-muted: #94a3b8;
     --color-border: rgba(255, 255, 255, 0.1);
@@ -112,8 +125,8 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 20% 50%, rgba(82, 100, 88, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(101, 119, 107, 0.15) 0%, transparent 50%);
     z-index: -1;
     animation: gradientShift 15s ease infinite;
 }
@@ -137,7 +150,8 @@ body::before {
     position: sticky;
     top: 0;
     z-index: var(--z-sticky);
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(58, 74, 64, 0.85);
+    /* Dark Sage transparent */
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--color-border);
     box-shadow: var(--shadow-lg);
@@ -150,13 +164,14 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
 }
 
 .nav-brand {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
+    flex-shrink: 0;
 }
 
 .logo-icon {
@@ -179,16 +194,48 @@ body::before {
 .logo-text {
     font-size: var(--font-size-xl);
     font-weight: 800;
-    background: var(--gradient-rainbow);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--color-text-primary);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-base);
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    color: var(--color-text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-link.active {
+    color: var(--color-primary-light);
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.nav-link.active .nav-icon {
+    transform: scale(1.1);
 }
 
 .nav-stats {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
 }
 
 .stat-item {
@@ -208,19 +255,59 @@ body::before {
 }
 
 .stat-label {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xs) !important;
     color: var(--color-text-muted);
     font-weight: 500;
 }
 
 .stat-value {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-sm) !important;
     font-weight: 700;
     color: var(--color-text-primary);
 }
 
 .nav-icon {
     font-size: var(--font-size-lg);
+}
+
+@media (max-width: 1450px) {
+    .nav-stats {
+        gap: var(--spacing-sm);
+    }
+
+    .nav-container {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        gap: var(--spacing-xs);
+    }
+
+    .nav-menu {
+        gap: 0.25rem;
+    }
+
+    .nav-link {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .stat-item {
+        padding: var(--spacing-xs);
+    }
+}
+
+@media (max-width: 1275px) {
+    .stat-label {
+        display: none;
+    }
+}
+
+@media (max-width: 1250px) {
+    .nav-link span:not(.nav-icon) {
+        display: none;
+    }
+
+    .nav-container {
+        padding: var(--spacing-sm);
+    }
 }
 
 /* ========================================
@@ -605,21 +692,67 @@ body::before {
 }
 
 /* ========================================
+   TOGGLE SWITCH
+   ======================================== */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-bg-light);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: var(--color-success);
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px var(--color-success);
+}
+
+input:checked+.slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* ========================================
    RESPONSIVE DESIGN
    ======================================== */
-@media (max-width: 1024px) {
-    .nav-stats {
-        gap: var(--spacing-sm);
-    }
 
-    .stat-item {
-        padding: var(--spacing-xs);
-    }
-
-    .stat-label {
-        display: none;
-    }
-}
 
 @media (max-width: 768px) {
     .nav-toggle {
@@ -647,6 +780,9 @@ body::before {
 
     .nav-link {
         width: 100%;
+        text-align: center;
+        border: 2px solid var(--color-border);
+        border-radius: var(--border-radius-md);
         padding: var(--spacing-sm);
     }
 
@@ -743,4 +879,19 @@ body::before {
 
 .close-modal:hover {
     color: var(--color-text-primary);
+}
+
+/* Ensure Logo is Always Visible */
+@media (max-width: 768px) {
+    .logo-text {
+        display: block !important;
+        font-size: 1.1rem;
+        /* Slightly smaller for mobile */
+    }
+
+    .nav-brand {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
 }

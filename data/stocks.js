@@ -69,7 +69,7 @@ const StockData = {
         }
     },
 
-    // Generate new price based on volatility
+    // Generate new price based on volatility (Simulated)
     generatePrice(symbol) {
         const stock = this.stocks.find(s => s.symbol === symbol);
         if (!stock) return null;
@@ -89,14 +89,17 @@ const StockData = {
             changePercent: parseFloat((changePercent * 100).toFixed(2))
         };
 
-        this.priceHistory[symbol].push(priceData);
+        this.updatePriceHistory(symbol, priceData);
+        return priceData;
+    },
 
-        // Keep only last 100 prices
+    // Helper to update history
+    updatePriceHistory(symbol, priceData) {
+        if (!this.priceHistory[symbol]) this.initializePriceHistory(symbol);
+        this.priceHistory[symbol].push(priceData);
         if (this.priceHistory[symbol].length > 100) {
             this.priceHistory[symbol].shift();
         }
-
-        return priceData;
     },
 
     // Get current price
@@ -129,10 +132,43 @@ const StockData = {
     },
 
     // Simulate market update (call this periodically)
-    updateMarket() {
-        this.stocks.forEach(stock => {
-            this.generatePrice(stock.symbol);
-        });
+    async updateMarket() {
+        const useRealTime = Storage.get(Storage.keys.USE_REAL_TIME);
+        const apiKey = Storage.get(Storage.keys.STOCK_API_KEY);
+
+        if (useRealTime && apiKey) {
+            await this.fetchRealTimePrices(apiKey);
+        } else {
+            this.stocks.forEach(stock => {
+                this.generatePrice(stock.symbol);
+            });
+        }
+    },
+
+    // Fetch real-time prices from Finnhub
+    async fetchRealTimePrices(apiKey) {
+        for (const stock of this.stocks) {
+            try {
+                const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${stock.symbol}&token=${apiKey}`);
+                if (!response.ok) throw new Error('API Error');
+
+                const data = await response.json();
+
+                // Finnhub response: c = current price, d = change, dp = percent change
+                if (data.c) {
+                    const priceData = {
+                        date: new Date().toISOString(),
+                        price: parseFloat(data.c),
+                        change: parseFloat(data.d),
+                        changePercent: parseFloat(data.dp)
+                    };
+                    this.updatePriceHistory(stock.symbol, priceData);
+                }
+            } catch (error) {
+                console.warn(`Failed to fetch data for ${stock.symbol}, using simulation fallback.`);
+                this.generatePrice(stock.symbol);
+            }
+        }
     },
 
     // Get price history for a stock

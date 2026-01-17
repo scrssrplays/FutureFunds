@@ -7,7 +7,9 @@ const Storage = {
         CREDIT_HISTORY: 'futurefunds_credit_history',
         PORTFOLIO: 'futurefunds_portfolio',
         ACHIEVEMENTS: 'futurefunds_achievements',
-        BOOKMARKS: 'futurefunds_bookmarks'
+        BOOKMARKS: 'futurefunds_bookmarks',
+        STOCK_API_KEY: 'futurefunds_stock_api_key',
+        USE_REAL_TIME: 'futurefunds_use_real_time'
     },
 
     // Get item from localStorage
@@ -59,7 +61,7 @@ const Storage = {
     // Initialize default user profile
     initUserProfile() {
         let profile = this.get(this.keys.USER_PROFILE);
-        
+
         if (!profile) {
             profile = {
                 gradeLevel: null,
@@ -75,7 +77,7 @@ const Storage = {
             };
             this.set(this.keys.USER_PROFILE, profile);
         }
-        
+
         return profile;
     },
 
@@ -160,13 +162,13 @@ const Storage = {
     toggleBookmark(resourceId) {
         const bookmarks = this.getBookmarks();
         const index = bookmarks.indexOf(resourceId);
-        
+
         if (index > -1) {
             bookmarks.splice(index, 1);
         } else {
             bookmarks.push(resourceId);
         }
-        
+
         this.set(this.keys.BOOKMARKS, bookmarks);
         return bookmarks;
     }
