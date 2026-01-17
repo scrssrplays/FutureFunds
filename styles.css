@@ -752,11 +752,17 @@ input:checked+.slider:before {
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
-
+@media (min-width: 768px) {
+    .nav-toggle {
+        display: none;
+    }  
+}
 
 @media (max-width: 768px) {
     .nav-toggle {
-        display: flex;
+        background-color: #121815;
+        border-radius: 15px;
+        padding: 3px;
     }
 
     .nav-menu {
@@ -764,7 +770,7 @@ input:checked+.slider:before {
         top: 100%;
         left: 0;
         right: 0;
-        background: rgba(15, 23, 42, 0.95);
+        background: rgba(58, 74, 64, 0.95);
         backdrop-filter: blur(20px);
         flex-direction: column;
         padding: var(--spacing-md);
@@ -784,6 +790,17 @@ input:checked+.slider:before {
         border: 2px solid var(--color-border);
         border-radius: var(--border-radius-md);
         padding: var(--spacing-sm);
+    }
+
+    .nav-link span:not(.nav-icon) {
+        display: inline-block;
+        color: var(--color-text-primary);
+        font-size: 1rem;
+        line-height: 1.2;
+    }
+
+    .nav-menu {
+        z-index: var(--z-dropdown);
     }
 
     .main-content {
